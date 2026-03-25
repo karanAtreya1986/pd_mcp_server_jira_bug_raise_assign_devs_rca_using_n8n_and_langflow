@@ -23,14 +23,14 @@ A high-performance **Model Context Protocol (MCP)** server for Jira that automat
 
 ```mermaid
 graph TD
-    A[Production Apps (app.vwo.com)] -->|Errors| B[AI Coding Assistant]
-    B -->|MCP Protocol| C[Jira MCP Server]
-    C -->|API v3| D[Jira Cloud]
-    D -->|Webhooks/Polling| E[n8n Workflow]
-    D -->|API Polling| F[Langflow Chain]
-    E -->|Automated Doc| G[RCA MD Reports]
+    A["Production Apps (app.vwo.com)"] -->|Errors| B["AI Coding Assistant"]
+    B -->|MCP Protocol| C["Jira MCP Server"]
+    C -->|API v3| D["Jira Cloud"]
+    D -->|Webhooks/Polling| E["n8n Workflow"]
+    D -->|API Polling| F["Langflow Chain"]
+    E -->|Automated Doc| G["RCA MD Reports"]
     F -->|AI Generation| G
-    C -->|Reporting Scripts| H[Excel/HTML Analytics]
+    C -->|Reporting Scripts| H["Excel/HTML Analytics"]
 ```
 
 ---
