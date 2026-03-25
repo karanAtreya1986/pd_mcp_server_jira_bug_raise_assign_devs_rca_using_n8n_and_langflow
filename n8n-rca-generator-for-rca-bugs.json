@@ -1,0 +1,361 @@
+{
+  "name": "rca-generator-for-rca-bugs",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        -32
+      ],
+      "id": "a04d09a8-13c8-4618-b5b5-2ac7e11773bb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -32
+      ],
+      "id": "cdb0d385-2bd8-4a81-a88f-906744c90c87",
+      "name": "Get many issues",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "22isT7dJpOnXiTmg",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        16,
+        -32
+      ],
+      "id": "b3eab683-646e-49b2-b039-84307b79a1d9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "58bae79c-043d-4c6e-ae51-3bc0a9ecd9b1",
+              "leftValue": "={{ $json.fields.summary }}",
+              "rightValue": "RCA",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        176
+      ],
+      "id": "51f2d5bf-88ef-43ff-89fd-dc44f7a66641",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "https://sdet.dorik.io/rca",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        432,
+        272
+      ],
+      "id": "81c7e2fc-ccb4-4682-b978-fa0049132ffc",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a Root Cause Analysis (RCA) for the following Jira ticket.\n\nTitle:\n{{ $('Loop Over Items').item.json.fields.summary }}\n\n\nFollow these RCA rules:\n{{ $json.data }}\n\nReturn the result in this format:\n\nBug Number:\n<your answer>\n\nBug Summary:\n{{ $('Loop Over Items').item.json.fields.summary }}\n\nRoot Cause:\n<your answer>\n\nFix:\n<your answer>\n\nPrevention:\n<your answer>\n\nRules:\n- Use line breaks exactly as shown\n- Do NOT write everything in one paragraph\n- Separate each bug clearly\n- Keep it clean and readable\n- Do not add extra information and text. \n- Give answers to the point",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        688,
+        432
+      ],
+      "id": "926d01d2-86e7-4eea-9791-f79c68f66c76",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "moonshotai/kimi-k2-instruct-0905",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        752,
+        112
+      ],
+      "id": "2021441b-d304-4a93-abcd-afa0fac3a18b",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "kkqlTeoppkvMzMnh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84911770-72c8-404f-8797-bdd405f103f6",
+              "name": "fields.summary",
+              "value": "={{ $('Loop Over Items').item.json.fields.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "869f68fc-814e-4b77-82dd-9b2b6d1a8477",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        224
+      ],
+      "id": "83d158e3-52b1-4054-b897-23af2a92cb34",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1TUSCtn2LPjNdDxPq-9DJYxO0KyC3Gw1HT8-KqYJrTA8",
+          "mode": "list",
+          "cachedResultName": "prod-defects-rca",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TUSCtn2LPjNdDxPq-9DJYxO0KyC3Gw1HT8-KqYJrTA8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TUSCtn2LPjNdDxPq-9DJYxO0KyC3Gw1HT8-KqYJrTA8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Bug-ID": "={{ $('Loop Over Items').item.json.key }}",
+            "Bug-Summary": "={{ $json.fields.summary }}",
+            "RCA-Details": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Bug-ID",
+              "displayName": "Bug-ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bug-Summary",
+              "displayName": "Bug-Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "RCA-Details",
+              "displayName": "RCA-Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        272
+      ],
+      "id": "8a9a620d-e08b-4e41-8f5b-de1d67ea6b3c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IomSkBeHOFz6Wz4Y",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many issues": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f57870f6-475c-4acf-b233-99f6c69d7861",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "876f10a03a22b36ce4a72ca41657b3c83fa1120d2eb9e1df17b182bc69c8e0ed"
+  },
+  "id": "caWg1QQSQLzPBEpo",
+  "tags": []
+}

@@ -1,0 +1,12 @@
+node_modules/
+.env
+*.xlsx
+*.csv
+projects.json
+jira_response_structure.txt
+export_error.txt
+result.txt
+~$all_jira_bugs_export.xlsx
+.vscode/
+.idea/
+*.log

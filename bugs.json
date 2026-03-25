@@ -1,0 +1,71 @@
+[
+  {
+    "id": "BUG-API-001",
+    "title": "500 Internal Server Error (Login API) with Special Characters",
+    "priority": "High",
+    "type": "API",
+    "assignee": "Rajesh Kumar",
+    "steps": [
+      "Navigate to app.vwo.com",
+      "Enter 'test\\'OR\\'1=1@vwo.com' in email",
+      "Check server response"
+    ],
+    "expected": "400/404 or human error message.",
+    "actual": "500 Internal Server Error (Stack trace visible)."
+  },
+  {
+    "id": "BUG-API-002",
+    "title": "MFA Response Time > 10s (Verify API)",
+    "priority": "Critical",
+    "type": "API",
+    "assignee": "Anita Desai",
+    "steps": [
+      "Login with correct creds",
+      "Submit valid MFA code",
+      "Check verification latency"
+    ],
+    "expected": "MFA verified < 2s.",
+    "actual": "12s response time - connection timeout."
+  },
+  {
+    "id": "BUG-API-003",
+    "title": "Missing 'status' Property in Invalid Password JSON Response",
+    "priority": "Medium",
+    "type": "API",
+    "assignee": "Sarah Chen",
+    "steps": [
+      "Enter wrong credentials",
+      "Analyze network intercept"
+    ],
+    "expected": "JSON should contain { status: 'error' }.",
+    "actual": "JSON missing 'status' field."
+  },
+  {
+    "id": "BUG-UI-001",
+    "title": "Forgot Password Link Overlap with Login Button (Mobile View)",
+    "priority": "High",
+    "type": "UI",
+    "assignee": "Maya Lin",
+    "steps": [
+      "View login page on screen widths < 380px",
+      "Try to click 'Forgot Password' link"
+    ],
+    "expected": "Link is clickable.",
+    "actual": "Link is obscured by the button hit box.",
+    "screenshot": "vwo_login_mobile_overlap_bug.png"
+  },
+  {
+    "id": "BUG-UI-002",
+    "title": "Password Visibility Eye Icon Missing in Safari",
+    "priority": "Medium",
+    "type": "UI",
+    "assignee": "Kevin O'Connor",
+    "steps": [
+      "Open VWO Login in Safari browser",
+      "Look at password field"
+    ],
+    "expected": "Eye icon visible on the right.",
+    "actual": "Eye icon is not rendered.",
+    "screenshot": "vwo_login_eye_icon_missing_bug.png"
+  }
+]

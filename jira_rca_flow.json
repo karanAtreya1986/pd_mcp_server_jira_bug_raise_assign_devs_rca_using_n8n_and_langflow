@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "scheduler",
+      "type": "Scheduler",
+      "data": {
+        "interval": 3600
+      }
+    },
+    {
+      "id": "jira_fetch",
+      "type": "HttpRequest",
+      "data": {
+        "method": "GET",
+        "url": "https://YOUR_DOMAIN.atlassian.net/rest/api/3/search?jql=project=XYZ ORDER BY created DESC",
+        "headers": {
+          "Authorization": "Basic YOUR_API_TOKEN",
+          "Accept": "application/json"
+        }
+      }
+    },
+    {
+      "id": "extract_issues",
+      "type": "JSONExtractor",
+      "data": {
+        "path": "issues"
+      }
+    },
+    {
+      "id": "loop",
+      "type": "ForEach",
+      "data": {}
+    },
+    {
+      "id": "condition",
+      "type": "ConditionalRouter",
+      "data": {
+        "condition": "RCA in item.fields.summary"
+      }
+    },
+    {
+      "id": "rca_rules",
+      "type": "URLLoader",
+      "data": {
+        "url": "https://sdet.dorik.io/rca"
+      }
+    },
+    {
+      "id": "prompt",
+      "type": "PromptTemplate",
+      "data": {
+        "template": "You are an expert SDET.\n\nUsing the RCA guidelines below:\n{rca_rules}\n\nCreate a Root Cause Analysis for the Jira ticket:\n\nTitle: {title}\nDescription: {description}\n\nFollow the exact RCA format from the guidelines.\n\nSections:\n- Issue Summary\n- Timeline\n- Root Cause\n- Fix\n- Prevention"
+      }
+    },
+    {
+      "id": "llm",
+      "type": "OpenAI",
+      "data": {
+        "model": "gpt-4o-mini",
+        "temperature": 0.2
+      }
+    },
+    {
+      "id": "output",
+      "type": "TextOutput",
+      "data": {}
+    }
+  ],
+  "edges": [
+    { "source": "scheduler", "target": "jira_fetch" },
+    { "source": "jira_fetch", "target": "extract_issues" },
+    { "source": "extract_issues", "target": "loop" },
+    { "source": "loop", "target": "condition" },
+    { "source": "condition", "target": "rca_rules", "condition": "true" },
+    { "source": "rca_rules", "target": "prompt" },
+    { "source": "prompt", "target": "llm" },
+    { "source": "llm", "target": "output" }
+  ]
+}

@@ -1,0 +1,7 @@
+[
+  { "id": "DEV-001", "name": "Maya Lin", "role": "Frontend Developer", "specialty": "React & Responsive Design" },
+  { "id": "DEV-002", "name": "Rajesh Kumar", "role": "Backend Developer", "specialty": "Node.js & Security" },
+  { "id": "DEV-003", "name": "Sarah Chen", "role": "Full Stack Developer", "specialty": "Architecture & APIs" },
+  { "id": "DEV-004", "name": "Kevin O'Connor", "role": "Frontend Developer", "specialty": "Accessibility & UI/UX" },
+  { "id": "DEV-005", "name": "Anita Desai", "role": "Backend Developer", "specialty": "Performance & Databases" }
+]

@@ -1,0 +1,33 @@
+Create a Root Cause Analysis (RCA) for the following Jira ticket.
+
+Title:
+{{ $('Loop Over Items').item.json.fields.summary }}
+
+
+Follow these RCA rules:
+{{ $json.data }}
+
+Return the result in this format:
+
+Bug Number:
+<your answer>
+
+Bug Summary:
+{{ $('Loop Over Items').item.json.fields.summary }}
+
+Root Cause:
+<your answer>
+
+Fix:
+<your answer>
+
+Prevention:
+<your answer>
+
+Rules:
+- Use line breaks exactly as shown
+- Do NOT write everything in one paragraph
+- Separate each bug clearly
+- Keep it clean and readable
+- Do not add extra information and text. 
+- Give answers to the point
